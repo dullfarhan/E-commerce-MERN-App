@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useParams } from "react-router";
 import { Table, Col, Image, Row, Button, Badge } from "react-bootstrap";
-import img from "../../logo.svg";
+import logo from "../../logo.svg";
 
 export default function ProductDetails() {
   const products = [
@@ -112,14 +112,22 @@ export default function ProductDetails() {
   function handelAddtoCart() {
     axios.post("http://localhost:3000/user/addtocart/" + id);
   }
-  const { price, categories, title, desc } = items;
-
+  const { price, categories, title, desc, img } = items;
+  let image = "";
+  if (img) {
+    image = "data:image/png;base64," + img;
+  } else {
+    image = logo;
+  }
   return (
     <div>
       <Table>
         <Row>
           {" "}
-          <Image src={img} style={{ width: "50%" }}></Image>{" "}
+          <Image
+            src={image}
+            style={{ width: "700px", padding: "60px" }}
+          ></Image>{" "}
           <Col>
             <h2 style={{ paddingTop: 50, width: "75%", textAlign: "center" }}>
               {title}

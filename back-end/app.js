@@ -2,7 +2,13 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const multer = require("multer");
 
+const ram = multer.memoryStorage();
+
+const upload = multer({ storage: ram });
+
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import toutes
@@ -10,9 +16,10 @@ const postsRoute = require("./routes/posts");
 const userRoute = require("./routes/user");
 const productRoute = require("./routes/product");
 const adminRoute = require("./routes/admin");
+const { urlencoded } = require("body-parser");
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3001"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

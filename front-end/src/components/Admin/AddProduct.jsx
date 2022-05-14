@@ -1,4 +1,5 @@
 import { RemoveFromQueue } from '@material-ui/icons';
+import {Base64} from "js-base64"
 import React, { useState } from 'react'
 import {
   Badge,  Button,  Card,  Form,  Navbar,  Nav,  Container,  Row,  Col,} from "react-bootstrap";
@@ -30,19 +31,24 @@ export default function AddProduct() {
       setproductData({...productData,"price":parseInt( e.target.value)})
     }
     function handelSubmit(e) {
-      e.preventDefault();
-      //alert(productData);
-      console.log(productData)
-      axios.post("http://localhost:3000/admin/addproduct",productData).then((err)=>{
-        if(err){
-          console.log(err);
-        }
-      })
+        navigate("/admin/addProduct");
+      // e.preventDefault();
+      // //alert(productData);
+      // console.log(productData)
+      // axios.post("http://localhost:3000/admin/addproduct",productData).then((err)=>{
+      //   if(err){
+      //     console.log(err);
+      //   }
+      // })
 
     }
   const [imgPath, setimgPath] = useState(logo);
   const imageSubmit =(e)=>{
     setimgPath(URL.createObjectURL(e.target.files[0]));
+    console.log(e.target);   
+
+    setproductData({...productData,"img":Base64.btoa(e.target.files[0])});
+    
   }
   const navigate = useNavigate();
   const gotoRegister = () => navigate("/user/Register");
@@ -58,7 +64,12 @@ export default function AddProduct() {
               </Card.Header>
               <Card.Body>
                 <Form
-               onSubmit={handelSubmit}
+                 action="http://localhost:3000/admin/addproduct"
+                 method="post"
+                 
+                 encType="multipart/form-data"
+                 onSubmit={handelSubmit}
+
                 >
                   <Row >
                     <Col >
@@ -68,6 +79,7 @@ export default function AddProduct() {
                           <Form.Group>
                             <label>Product Name</label>
                             <Form.Control
+                              name='title'
                               defaultValue=""
                               placeholder=""
                               type="text"
@@ -82,6 +94,7 @@ export default function AddProduct() {
                             <label>Category</label>
                             <Form.Control
                               defaultValue=""
+                              name='categories'
                               placeholder=""
                               type="text"
                               onChange={handelcategorieschange}
@@ -97,6 +110,7 @@ export default function AddProduct() {
                           <Form.Group>
                             <label>Price</label>
                             <Form.Control
+                            name='price'
                               defaultValue=""
                               placeholder=""
                               type="number"
@@ -111,6 +125,7 @@ export default function AddProduct() {
                         <Form.Group controlId="formFile" className="mb-3">
                           <Form.Label>Default file input example</Form.Label>
                           <Form.Control
+                            name="img"
                             type="file"
                             onChange={imageSubmit} />
                         </Form.Group>
@@ -129,6 +144,7 @@ export default function AddProduct() {
                       <Form.Group>
                         <label>Specfication</label>
                         <Form.Control
+                        name='desc'
                           defaultValue=""
                           placeholder="Product Detlais"
                           type="text"

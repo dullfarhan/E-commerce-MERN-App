@@ -5,10 +5,15 @@ const Pendorder = require("../models/Pendingorder");
 const deliverorder = require("../models/deliveredorder");
 const onwayorder = require("../models/onwayorder");
 const User = require("../models/User");
-
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+//app.use(bodyParser.json());
+const multer = require("multer");
+const { Base64 } = require("js-base64");
+const ram = multer.memoryStorage();
 
+const upload = multer({ storage: ram });
 //REGISTER
 router.post("/register", async (req, res) => {
   res.send("we are on register");
@@ -65,20 +70,26 @@ router.post("/login", async (req, res) => {
 
 //  add product item   on admin/addproduct
 
-router.post(
-  "/addproduct",
-  /*verifyTokenAndAdmin,*/ async (req, res) => {
-    //res.send("we are on products");
-    const newProduct = new Product(req.body);
-
-    try {
-      const savedProduct = await newProduct.save();
-      return res.json(savedProduct);
-    } catch (err) {
-      return res.status(500).json(err);
-    }
+router.post("/addproduct", upload.single("img"), async (req, res) => {
+  //res.send("we are on products");
+  let prodDetails = req.body;
+  if (req.file) {
+    prodDetails = {
+      ...req.body,
+      img: req.file.buffer.toString("base64"),
+    };
   }
-);
+  console.log(prodDetails);
+
+  const newProduct = new Product(prodDetails);
+
+  try {
+    const savedProduct = await newProduct.save();
+    return res.json(savedProduct);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
 
 ////  view pending order by admin
 
@@ -203,6 +214,13 @@ router.delete(
   }
 );
 
+router.post("/profile", upload.single("img"), async (req, res) => {
+  console.log(req.body);
+  if (req.file) {
+    console.log(req.file.buffer);
+  }
+  return res.sendStatus(200);
+});
 /////
 
 module.exports = router;
