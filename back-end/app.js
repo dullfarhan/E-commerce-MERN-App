@@ -27,10 +27,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/posts", postsRoute);
-app.use("/user", userRoute);
-app.use("/product", productRoute);
-app.use("/admin", adminRoute);
+app.use("/api/posts", postsRoute);
+app.use("/api/user", userRoute);
+app.use("/api/product", productRoute);
+app.use("/api/admin", adminRoute);
 
 const db = "mongodb://localhost:27017/project";
 
